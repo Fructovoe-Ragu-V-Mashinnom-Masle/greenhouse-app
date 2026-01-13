@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Теплица</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    h2 {
+      margin-top: 24px;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #22c55e;
+      color: #022c22;
+    }
+    button.secondary {
+      background: #38bdf8;
+      color: #082f49;
+    }
+    button.danger {
+      background: #ef4444;
+      color: #450a0a;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    input[type="number"] {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    input[type="range"] {
+      width: 100%;
+    }
+    .time {
+      text-align: center;
+      opacity: 0.8;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="time" id="time"></div>
+
+  <div class="card">
+    <h2>💧 Насос</h2>
+
+    <input type="range" id="pumpSlider" min="1" max="600" value="10">
+    <div class="row">
+      <input type="number" id="pumpInput" min="1" max="600" value="10">
+      <span>сек</span>
+    </div>
+
+    <button onclick="pumpTimed()">Включить с таймером</button>
+    <button class="secondary" onclick="pumpOn()">Включить без таймера</button>
+    <button class="danger" onclick="pumpOff()">Выключить</button>
+  </div>
+
+  <div class="card">
+    <h2>💡 Свет</h2>
+    <button onclick="toggleLight()">Переключить свет</button>
+  </div>
+
+  <div class="card">
+    <h2>📊 Статус</h2>
+    <div id="status">Нажми “Обновить”</div>
+    <button class="secondary" onclick="requestStatus()">Обновить</button>
+  </div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+
+  const slider = document.getElementById("pumpSlider");
+  const input  = document.getElementById("pumpInput");
+
+  slider.oninput = () => input.value = slider.value;
+  input.oninput  = () => slider.value = input.value;
+
+  function send(text) {
+    tg.sendData(text);
+  }
+
+  function pumpTimed() {
+    const v = input.value;
+    send("PUMP:" + v);
+  }
+
+  function pumpOn() {
+    send("PUMP:ON");
+  }
+
+  function pumpOff() {
+    send("PUMP:OFF");
+  }
+
+  function toggleLight() {
+    send("LIGHT");
+  }
+
+  function requestStatus() {
+    send("STATUS");
+  }
+
+  function updateTime() {
+    const d = new Date();
+    document.getElementById("time").innerText =
+      d.toLocaleDateString() + " " + d.toLocaleTimeString().slice(0,5);
+  }
+
+  updateTime();
+  setInterval(updateTime, 60000);
+</script>
+
+</body>
+</html>
