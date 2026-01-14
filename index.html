@@ -103,13 +103,11 @@
   input.oninput  = () => slider.value = input.value;
 
   function send(text) {
-   fetch(SERVER, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text })
-    })
-    .then(() => console.log("Отправлено:", text))
-    .catch(err => console.error("Ошибка:", err));
+  fetch("http://155.212.147.159:3000/cmd", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text })
+  });
   }
 
   function pumpTimed() {
