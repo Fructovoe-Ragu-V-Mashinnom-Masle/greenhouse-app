@@ -103,7 +103,13 @@
   input.oninput  = () => slider.value = input.value;
 
   function send(text) {
-    tg.sendData(text);
+   fetch(SERVER, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    })
+    .then(() => console.log("Отправлено:", text))
+    .catch(err => console.error("Ошибка:", err));
   }
 
   function pumpTimed() {
